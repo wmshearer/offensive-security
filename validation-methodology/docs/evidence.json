@@ -1,0 +1,209 @@
+[
+ {
+  "id": 1,
+  "slug": "orion-walkthrough",
+  "type": "prove-by-hand-first",
+  "step_title": "Fire the object-injection POST to reach phpinfo()",
+  "line_start": 11241,
+  "line_end": 11250,
+  "prevented": "Proved the deserialization primitive was real before switching to a Metasploit module, rather than trusting the version banner."
+ },
+ {
+  "id": 2,
+  "slug": "abducted-walkthrough",
+  "type": "out-of-band-confirmation",
+  "step_title": "Confirm blind execution out-of-band with an ICMP ping",
+  "line_start": 10587,
+  "line_end": 10591,
+  "prevented": "Confirmed a blind injection reached code execution before committing to a reverse shell."
+ },
+ {
+  "id": 3,
+  "slug": "snapped-walkthrough",
+  "type": "prove-by-hand-first",
+  "step_title": "Confirm with the advisory's own PoC",
+  "line_start": 6027,
+  "line_end": 6032,
+  "prevented": "Confirmed the CVE applied to this target before hand-building an exploit."
+ },
+ {
+  "id": 4,
+  "slug": "snapped-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Check snapd's version",
+  "line_start": 6114,
+  "line_end": 6119,
+  "prevented": "Avoided building a TOCTOU exploit against a version outside the vulnerable range."
+ },
+ {
+  "id": 5,
+  "slug": "kobold-walkthrough",
+  "type": "scanner-false-positive",
+  "step_title": "Rule out the snap-confine CVE",
+  "line_start": 11681,
+  "line_end": 11686,
+  "prevented": "The CVE needs a layout bind-mount. No snap mount existed, so the scanner hit was a false positive."
+ },
+ {
+  "id": 6,
+  "slug": "kobold-walkthrough",
+  "type": "scanner-false-positive",
+  "step_title": "Rule out dirtyfrag",
+  "line_start": 11687,
+  "line_end": 11691,
+  "prevented": "Second scanner-flagged CVE ruled out on its kernel-module precondition rather than by firing it."
+ },
+ {
+  "id": 7,
+  "slug": "helix-walkthrough",
+  "type": "baseline-first",
+  "step_title": "Try it cold",
+  "line_start": 5187,
+  "line_end": 5191,
+  "prevented": "Established reactor state before touching it, so later changes could be attributed to the exploit."
+ },
+ {
+  "id": 8,
+  "slug": "helix-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Probe the HMI from inside the shell",
+  "line_start": 5163,
+  "line_end": 5167,
+  "prevented": "Confirmed what was actually listening on 8081 before building a tunnel to it."
+ },
+ {
+  "id": 9,
+  "slug": "twomillion-walkthrough",
+  "type": "confirm-change-took-effect",
+  "step_title": "Verify",
+  "line_start": 5604,
+  "line_end": 5608,
+  "prevented": "Distinguished a real privilege change from an endpoint that merely returned 200."
+ },
+ {
+  "id": 10,
+  "slug": "twomillion-walkthrough",
+  "type": "rule-out-simple-case-first",
+  "step_title": "Try the VPN endpoint as a non-admin",
+  "line_start": 5568,
+  "line_end": 5572,
+  "prevented": "Showed access control worked elsewhere, so the settings bypass was a real distinct bug."
+ },
+ {
+  "id": 11,
+  "slug": "support-walkthrough",
+  "type": "two-method-confirmation",
+  "step_title": "Confirm independently under Wine",
+  "line_start": 7099,
+  "line_end": 7127,
+  "prevented": "Static decompilation and a live LDAP capture produced the same credential. Two methods, one answer."
+ },
+ {
+  "id": 12,
+  "slug": "support-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Confirm the DC role",
+  "line_start": 7182,
+  "line_end": 7187,
+  "prevented": "Confirmed the host really was the domain PDC before building an attack path on that assumption."
+ },
+ {
+  "id": 13,
+  "slug": "support-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Check the machine account quota",
+  "line_start": 7255,
+  "line_end": 7260,
+  "prevented": "RBCD needs the ability to add a computer account. Checked the quota before assuming the path was open."
+ },
+ {
+  "id": 14,
+  "slug": "fireflow-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Ask the service how it authenticates",
+  "line_start": 4758,
+  "line_end": 4768,
+  "prevented": "Read the server's own description of its auth model instead of assuming an alg:none weakness."
+ },
+ {
+  "id": 15,
+  "slug": "cap-walkthrough",
+  "type": "baseline-first",
+  "step_title": "Trigger a capture and download it",
+  "line_start": 10934,
+  "line_end": 10938,
+  "prevented": "Opened his own capture first, so another user's exposed data was recognisable as such."
+ },
+ {
+  "id": 16,
+  "slug": "cap-walkthrough",
+  "type": "rule-out-simple-case-first",
+  "step_title": "Try anonymous FTP",
+  "line_start": 10908,
+  "line_end": 10912,
+  "prevented": "Ruled out the simplest unauthenticated foothold before moving to the web surface."
+ },
+ {
+  "id": 17,
+  "slug": "ghostlink-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Read the healthcheck topic",
+  "line_start": 6516,
+  "line_end": 6522,
+  "prevented": "Learned the exact message fields the service trusted before crafting a malicious one."
+ },
+ {
+  "id": 18,
+  "slug": "ghostlink-walkthrough",
+  "type": "rule-out-simple-case-first",
+  "step_title": "Try naive traversal",
+  "line_start": 6583,
+  "line_end": 6588,
+  "prevented": "Tested the obvious pattern first and got a 403, which is what justified trying double-encoding."
+ },
+ {
+  "id": 19,
+  "slug": "ghostlink-walkthrough",
+  "type": "confirm-change-took-effect",
+  "step_title": "Check what is inside",
+  "line_start": 6648,
+  "line_end": 6652,
+  "prevented": "Confirmed the archive held a KeePass database before spending effort opening it."
+ },
+ {
+  "id": 20,
+  "slug": "ghostlink-walkthrough",
+  "type": "confirm-change-took-effect",
+  "step_title": "Log into Gogs as vroth",
+  "line_start": 6687,
+  "line_end": 6692,
+  "prevented": "Confirmed the recovered credential authenticated before spending an exploit attempt on it."
+ },
+ {
+  "id": 21,
+  "slug": "principal-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Read the client JavaScript",
+  "line_start": 12387,
+  "line_end": 12391,
+  "prevented": "Confirmed the exact token structure from front-end code instead of assuming a generic pattern."
+ },
+ {
+  "id": 22,
+  "slug": "principal-walkthrough",
+  "type": "precondition-check",
+  "step_title": "Read the sshd CA config",
+  "line_start": 12520,
+  "line_end": 12524,
+  "prevented": "Confirmed the CA trust was genuinely unrestricted before signing a certificate claiming root."
+ },
+ {
+  "id": 23,
+  "slug": "principal-walkthrough",
+  "type": "confirm-change-took-effect",
+  "step_title": "Verify the certificate",
+  "line_start": 12544,
+  "line_end": 12548,
+  "prevented": "Confirmed the signed certificate actually claimed the root principal before trying to use it."
+ }
+]
