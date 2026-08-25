@@ -33,10 +33,11 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+from sibling_path import find_project  # noqa: E402
 # Reuse the bundle the cloud coverage project already downloaded rather than
 # fetching a second 54MB copy. Same file, same version, one copy on disk.
 STIX = (
-    ROOT.parent / "cloud-detection-coverage" / "data" / "enterprise-attack.json"
+    find_project("cloud-detection-coverage") / "data" / "enterprise-attack.json"
 )
 
 # Families selected by a stated rule, not by which produced a better result.
