@@ -1,0 +1,146 @@
+Attached 3 probes
+TIME     PID      COMM                 SYSCALL    DETAIL
+1147     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414-init/merged fstype=overlay
+1157     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414/merged fstype=overlay
+1165     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414/merged fstype=overlay
+1224     3294142  runc:[2:INIT]        mount      src= dst=/ fstype=
+1224     3294142  runc:[2:INIT]        mount      src= dst=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414/merged fstype=
+1224     3294142  runc:[2:INIT]        mount      src=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414/merged dst=/var/lib/docker/overlay2/092d04646d1621cc9d5d430bb35087cf48fff78b3024ea8027d96bb40ba44414/merged fstype=bind
+1224     3294142  runc:[2:INIT]        mount      src=proc dst=/proc/thread-self/fd/14 fstype=proc
+1224     3294142  runc:[2:INIT]        mount      src=tmpfs dst=/proc/thread-self/fd/14 fstype=tmpfs
+1224     3294142  runc:[2:INIT]        mount      src=devpts dst=/proc/thread-self/fd/11 fstype=devpts
+1224     3294142  runc:[2:INIT]        mount      src=sysfs dst=/proc/thread-self/fd/14 fstype=sysfs
+1224     3294142  runc:[2:INIT]        mount      src=cgroup dst=/proc/thread-self/fd/14 fstype=cgroup2
+1225     3294142  runc:[2:INIT]        mount      src=mqueue dst=/proc/thread-self/fd/11 fstype=mqueue
+1225     3294142  runc:[2:INIT]        mount      src=shm dst=/proc/thread-self/fd/11 fstype=tmpfs
+1225     3294142  runc:[2:INIT]        mount      src=/var/lib/docker/containers/bfb95a66d3e4e808fa20e2dffa8ac8d8f130c448a0979bfd1d226fdeded85eca/resolv.conf dst=/proc/thread-self/fd/14 fstype=bind
+1225     3294142  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1225     3294142  runc:[2:INIT]        mount      src=/var/lib/docker/containers/bfb95a66d3e4e808fa20e2dffa8ac8d8f130c448a0979bfd1d226fdeded85eca/hostname dst=/proc/thread-self/fd/14 fstype=bind
+1225     3294142  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1225     3294142  runc:[2:INIT]        mount      src=/var/lib/docker/containers/bfb95a66d3e4e808fa20e2dffa8ac8d8f130c448a0979bfd1d226fdeded85eca/hosts dst=/proc/thread-self/fd/14 fstype=bind
+1225     3294142  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1225     3294142  runc:[2:INIT]        mount      src=/var/run/docker.sock dst=/proc/thread-self/fd/11 fstype=bind
+1225     3294142  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1229     3294142  runc:[2:INIT]        pivot_root new_root=. put_old=.
+1230     3294142  runc:[2:INIT]        mount      src= dst=. fstype=
+1230     3294142  runc:[2:INIT]        mount      src=/proc/bus dst=/proc/bus fstype=
+1230     3294142  runc:[2:INIT]        mount      src=/proc/bus dst=/proc/bus fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/fs dst=/proc/fs fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/fs dst=/proc/fs fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/irq dst=/proc/irq fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/irq dst=/proc/irq fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/sys dst=/proc/sys fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/sys dst=/proc/sys fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/sysrq-trigger dst=/proc/sysrq-trigger fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/sysrq-trigger dst=/proc/sysrq-trigger fstype=
+1231     3294142  runc:[2:INIT]        mount      src=tmpfs dst=/proc/asound fstype=tmpfs
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/8 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/8 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/8 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/8 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1231     3294142  runc:[2:INIT]        mount      src=/proc/thread-self/fd/16 dst=/proc/thread-self/fd/11 fstype=
+1260     2104881  dockerd              mount      src=/proc/3294142/ns/net dst=/var/run/docker/netns/82079fde4311 fstype=bind
+2830     3294331  bwrap                mount      src= dst=/ fstype=  <-- NOT container runtime, worth review
+2830     3294331  bwrap                mount      src=tmpfs dst=/tmp fstype=tmpfs  <-- NOT container runtime, worth review
+2830     3294331  bwrap                mount      src=newroot dst=newroot fstype=  <-- NOT container runtime, worth review
+2830     3294331  bwrap                pivot_root new_root=/tmp put_old=oldroot  <-- NOT container runtime, worth review
+2830     3294331  bwrap                mount      src=/oldroot/usr dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2831     3294331  bwrap                mount      src=none dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2831     3294331  bwrap                mount      src=tmpfs dst=/newroot/dev fstype=tmpfs  <-- NOT container runtime, worth review
+2831     3294331  bwrap                mount      src=/oldroot/dev/null dst=/newroot/dev/null fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src= dst=/ fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=tmpfs dst=/tmp fstype=tmpfs  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=newroot dst=newroot fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                pivot_root new_root=/tmp put_old=oldroot  <-- NOT container runtime, worth review
+2831     3294331  bwrap                mount      src=/oldroot/dev/zero dst=/newroot/dev/zero fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=/oldroot/usr dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=none dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=tmpfs dst=/newroot/dev fstype=tmpfs  <-- NOT container runtime, worth review
+2831     3294333  bwrap                mount      src=/oldroot/dev/null dst=/newroot/dev/null fstype=  <-- NOT container runtime, worth review
+2831     3294331  bwrap                mount      src=/oldroot/dev/full dst=/newroot/dev/full fstype=  <-- NOT container runtime, worth review
+2831     3294335  bwrap                mount      src= dst=/ fstype=  <-- NOT container runtime, worth review
+2832     3294335  bwrap                mount      src=tmpfs dst=/tmp fstype=tmpfs  <-- NOT container runtime, worth review
+2832     3294333  bwrap                mount      src=/oldroot/dev/zero dst=/newroot/dev/zero fstype=  <-- NOT container runtime, worth review
+2832     3294335  bwrap                mount      src=newroot dst=newroot fstype=  <-- NOT container runtime, worth review
+2832     3294331  bwrap                mount      src=/oldroot/dev/random dst=/newroot/dev/random fstype=  <-- NOT container runtime, worth review
+2832     3294335  bwrap                pivot_root new_root=/tmp put_old=oldroot  <-- NOT container runtime, worth review
+2832     3294333  bwrap                mount      src=/oldroot/dev/full dst=/newroot/dev/full fstype=  <-- NOT container runtime, worth review
+2832     3294335  bwrap                mount      src=/oldroot/usr dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2832     3294333  bwrap                mount      src=/oldroot/dev/random dst=/newroot/dev/random fstype=  <-- NOT container runtime, worth review
+2832     3294331  bwrap                mount      src=/oldroot/dev/urandom dst=/newroot/dev/urandom fstype=  <-- NOT container runtime, worth review
+2832     3294333  bwrap                mount      src=/oldroot/dev/urandom dst=/newroot/dev/urandom fstype=  <-- NOT container runtime, worth review
+2832     3294331  bwrap                mount      src=/oldroot/dev/tty dst=/newroot/dev/tty fstype=  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=/oldroot/dev/tty dst=/newroot/dev/tty fstype=  <-- NOT container runtime, worth review
+2833     3294331  bwrap                mount      src=devpts dst=/newroot/dev/pts fstype=devpts  <-- NOT container runtime, worth review
+2833     3294336  bwrap                mount      src= dst=/ fstype=  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=devpts dst=/newroot/dev/pts fstype=devpts  <-- NOT container runtime, worth review
+2833     3294336  bwrap                mount      src=tmpfs dst=/tmp fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294331  bwrap                mount      src=/oldroot/etc/ld.so.cache dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=/oldroot/etc/ld.so.cache dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2833     3294336  bwrap                mount      src=newroot dst=newroot fstype=  <-- NOT container runtime, worth review
+2833     3294335  bwrap                mount      src=none dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2833     3294335  bwrap                mount      src=tmpfs dst=/newroot/dev fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294336  bwrap                pivot_root new_root=/tmp put_old=oldroot  <-- NOT container runtime, worth review
+2833     3294331  bwrap                mount      src=none dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2833     3294331  bwrap                mount      src=tmpfs dst=/newroot/tmp-home fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=none dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=tmpfs dst=/newroot/tmp-home fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=tmpfs dst=/newroot/tmp-run fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294336  bwrap                mount      src=/oldroot/usr dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2833     3294335  bwrap                mount      src=/oldroot/dev/null dst=/newroot/dev/null fstype=  <-- NOT container runtime, worth review
+2833     3294331  bwrap                mount      src=tmpfs dst=/newroot/tmp-run fstype=tmpfs  <-- NOT container runtime, worth review
+2833     3294333  bwrap                mount      src=oldroot dst=oldroot fstype=  <-- NOT container runtime, worth review
+2834     3294331  bwrap                mount      src=oldroot dst=oldroot fstype=  <-- NOT container runtime, worth review
+2834     3294335  bwrap                mount      src=/oldroot/dev/zero dst=/newroot/dev/zero fstype=  <-- NOT container runtime, worth review
+2834     3294336  bwrap                mount      src=none dst=/newroot/usr fstype=  <-- NOT container runtime, worth review
+2834     3294336  bwrap                mount      src=tmpfs dst=/newroot/dev fstype=tmpfs  <-- NOT container runtime, worth review
+2834     3294333  bwrap                pivot_root new_root=. put_old=.  <-- NOT container runtime, worth review
+2834     3294331  bwrap                pivot_root new_root=. put_old=.  <-- NOT container runtime, worth review
+2835     3294336  bwrap                mount      src=/oldroot/dev/null dst=/newroot/dev/null fstype=  <-- NOT container runtime, worth review
+2835     3294335  bwrap                mount      src=/oldroot/dev/full dst=/newroot/dev/full fstype=  <-- NOT container runtime, worth review
+2835     3294336  bwrap                mount      src=/oldroot/dev/zero dst=/newroot/dev/zero fstype=  <-- NOT container runtime, worth review
+2835     3294335  bwrap                mount      src=/oldroot/dev/random dst=/newroot/dev/random fstype=  <-- NOT container runtime, worth review
+2835     3294336  bwrap                mount      src=/oldroot/dev/full dst=/newroot/dev/full fstype=  <-- NOT container runtime, worth review
+2835     3294335  bwrap                mount      src=/oldroot/dev/urandom dst=/newroot/dev/urandom fstype=  <-- NOT container runtime, worth review
+2835     3294336  bwrap                mount      src=/oldroot/dev/random dst=/newroot/dev/random fstype=  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=/oldroot/dev/tty dst=/newroot/dev/tty fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=/oldroot/dev/urandom dst=/newroot/dev/urandom fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=/oldroot/dev/tty dst=/newroot/dev/tty fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=devpts dst=/newroot/dev/pts fstype=devpts  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=devpts dst=/newroot/dev/pts fstype=devpts  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=/oldroot/etc/ld.so.cache dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=/oldroot/etc/ld.so.cache dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=none dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=tmpfs dst=/newroot/tmp-home fstype=tmpfs  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=tmpfs dst=/newroot/tmp-run fstype=tmpfs  <-- NOT container runtime, worth review
+2836     3294336  bwrap                mount      src=oldroot dst=oldroot fstype=  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=none dst=/newroot/etc/ld.so.cache fstype=  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=tmpfs dst=/newroot/tmp-home fstype=tmpfs  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=tmpfs dst=/newroot/tmp-run fstype=tmpfs  <-- NOT container runtime, worth review
+2836     3294335  bwrap                mount      src=oldroot dst=oldroot fstype=  <-- NOT container runtime, worth review
+2836     3294336  bwrap                pivot_root new_root=. put_old=.  <-- NOT container runtime, worth review
+2836     3294335  bwrap                pivot_root new_root=. put_old=.  <-- NOT container runtime, worth review
+
+

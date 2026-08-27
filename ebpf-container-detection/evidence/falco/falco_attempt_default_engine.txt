@@ -1,0 +1,18 @@
+2026-08-27T21:52:17+0000: Falco version: 0.39.2 (x86_64)
+2026-08-27T21:52:17+0000: Falco initialized with configuration files:
+2026-08-27T21:52:17+0000:    /etc/falco/falco.yaml | schema validation: ok
+2026-08-27T21:52:17+0000: System info: Linux version 7.0.12+kali-amd64 (devel@kali.org) (x86_64-linux-gnu-gcc-15 (Debian 15.2.0-17) 15.2.0, GNU ld (GNU Binutils for Debian) 2.46.50.20260608) #1 SMP PREEMPT_DYNAMIC Kali 7.0.12-2kali1 (2026-06-18)
+2026-08-27T21:52:17+0000: Loading rules from:
+2026-08-27T21:52:17+0000:    /etc/falco/falco_rules.yaml | schema validation: ok
+2026-08-27T21:52:17+0000:    /etc/falco/falco_rules.local.yaml | schema validation: none
+2026-08-27T21:52:17+0000: The chosen syscall buffer dimension is: 8388608 bytes (8 MBs)
+2026-08-27T21:52:17+0000: Starting health webserver with threadiness 20, listening on 0.0.0.0:8765
+2026-08-27T21:52:17+0000: Loaded event sources: syscall
+2026-08-27T21:52:17+0000: Enabled event sources: syscall
+2026-08-27T21:52:17+0000: Opening 'syscall' source with modern BPF probe.
+2026-08-27T21:52:17+0000: One ring buffer every '2' CPUs.
+2026-08-27T21:52:18+0000: An error occurred in an event source, forcing termination...
+Error: Initialization issues during scap_init
+Events detected: 0
+Rule counts by severity:
+Triggered rules by rule name:

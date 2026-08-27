@@ -1,0 +1,6 @@
+bpf/container_watch.bpf.o
+bpf/container_watch.skel.h
+bpf/container_watch
+__pycache__/
+.pytest_cache/
+*.pyc

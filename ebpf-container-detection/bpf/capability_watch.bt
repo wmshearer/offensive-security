@@ -1,0 +1,58 @@
+#!/usr/bin/env bpftrace
+/*
+ * capability_watch.bt
+ *
+ * Hooks the cap_capable() kprobe (no kfunc variant exists on this kernel's
+ * BTF -- checked with `bpftrace -l kfunc:cap_capable`, empty). This is the
+ * kernel's single choke point for "does the caller have capability X",
+ * called on every privileged operation attempt, whether or not the caller
+ * actually holds the capability.
+ *
+ * WHY THIS FILE FILTERS TO A SHORT ALLOWLIST OF CAPABILITY NUMBERS:
+ * Verified live on this desktop with NO deliberate test activity running:
+ * cap_capable fired roughly 40,000 times in about three seconds, from
+ * ordinary background processes (a C++ language server, gdb, Chrome's
+ * sandboxing, Splunk, a panel clock). Alerting on every cap_capable call
+ * is unusable noise before a single container is even involved. This script
+ * only prints for a short list of capabilities that matter for container
+ * escape and privilege abuse specifically: CAP_DAC_READ_SEARCH (2),
+ * CAP_SYS_MODULE (16), CAP_SYS_PTRACE (19), CAP_SYS_ADMIN (21),
+ * CAP_SYS_BOOT (22), CAP_MAC_ADMIN (33). Numbers are from
+ * /usr/include/linux/capability.h on this box, not guessed.
+ *
+ * Even with that filter, CAP_SYS_ADMIN specifically is exercised heavily by
+ * runc itself during ordinary container SETUP (127 calls observed from one
+ * `docker run --privileged`), so this script also flags whether the caller
+ * is a container-runtime process (runc/containerd/dockerd) or something
+ * else. The honest finding this produces (see FINDINGS.md) is that runtime
+ * capability observation cannot distinguish "container runtime doing its
+ * normal job with a capability" from "the container's own payload using
+ * that capability" without also correlating cgroup/pid-namespace identity,
+ * which this simple script does not attempt.
+ */
+
+BEGIN
+{
+	printf("%-8s %-8s %-20s %-4s %-20s %s\n", "TIME", "PID", "COMM", "CAP", "CAP_NAME", "NOTE");
+	@capnames[2] = "DAC_READ_SEARCH";
+	@capnames[16] = "SYS_MODULE";
+	@capnames[19] = "SYS_PTRACE";
+	@capnames[21] = "SYS_ADMIN";
+	@capnames[22] = "SYS_BOOT";
+	@capnames[33] = "MAC_ADMIN";
+}
+
+kprobe:cap_capable
+/arg2 == 2 || arg2 == 16 || arg2 == 19 || arg2 == 21 || arg2 == 22 || arg2 == 33/
+{
+	$is_runtime = (comm == "runc" || comm == "runc:[1:CHILD]" || comm == "runc:[2:INIT]" ||
+		comm == "containerd" || comm == "containerd-shim" || comm == "dockerd");
+	printf("%-8u %-8d %-20s %-4d %-20s %s\n",
+		elapsed / 1000000, pid, comm, arg2, @capnames[arg2],
+		$is_runtime ? "(container runtime setup)" : "(non-runtime process)");
+}
+
+END
+{
+	clear(@capnames);
+}

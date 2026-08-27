@@ -1,0 +1,72 @@
+#!/usr/bin/env bpftrace
+/*
+ * namespace_watch.bt
+ *
+ * Watches for namespace-manipulation syscalls: unshare, setns, and clone3
+ * calls that carry CLONE_NEW* flags.
+ *
+ * WHY THREE PROBES, NOT ONE:
+ * Verified live on this host (kernel 7.0.12+kali-amd64, Docker 28.5.2,
+ * runc 1.3.6) before writing this file. A plain `docker run` creates the
+ * container's namespaces with a SINGLE unshare(2) call from a process named
+ * "runc:[1:CHILD]", carrying six CLONE_NEW* flags at once. It does NOT use
+ * clone()/clone3() with namespace flags for that step; clone3 calls from
+ * docker/containerd/runc during a container start carry only thread-creation
+ * flags (CLONE_VM|FS|FILES|SIGHAND|THREAD|SYSVSEM), no namespace bits. A
+ * detector that only watches clone() flags, which is what most blog posts
+ * describe, MISSES the actual container-creation event on this runc version.
+ * setns is separate again: used to ENTER an existing namespace (e.g. `nsenter`,
+ * or a process joining a running container's namespace from outside it),
+ * not to create one.
+ *
+ * clone3's flags live in a userspace struct (struct clone_args) pointed to by
+ * the syscall argument, not a plain register value, unlike unshare() and
+ * clone(). This script dereferences that pointer to read the flags field
+ * (first u64 member of struct clone_args).
+ */
+
+BEGIN
+{
+	printf("%-8s %-8s %-20s %-10s %s\n", "TIME", "PID", "COMM", "SYSCALL", "NAMESPACE FLAGS");
+}
+
+tracepoint:syscalls:sys_enter_unshare
+{
+	$flags = args->unshare_flags;
+	if ($flags & 0x7e020000) {
+		$s = "";
+		if ($flags & 0x00020000) { $s = str("NEWNS,"); }
+		printf("%-8u %-8d %-20s %-10s flags=0x%lx %s%s%s%s%s%s\n",
+			elapsed / 1000000, pid, comm, "unshare", $flags,
+			$flags & 0x00020000 ? "NEWNS " : "",
+			$flags & 0x02000000 ? "NEWCGROUP " : "",
+			$flags & 0x04000000 ? "NEWUTS " : "",
+			$flags & 0x08000000 ? "NEWIPC " : "",
+			$flags & 0x10000000 ? "NEWUSER " : "",
+			$flags & 0x20000000 ? "NEWPID " : "");
+		if ($flags & 0x40000000) {
+			printf("    +NEWNET\n");
+		}
+	}
+}
+
+tracepoint:syscalls:sys_enter_clone3
+{
+	$flags = *(uint64 *)args->uargs;
+	if ($flags & 0x7e020000) {
+		printf("%-8u %-8d %-20s %-10s flags=0x%lx %s%s%s%s%s%s\n",
+			elapsed / 1000000, pid, comm, "clone3", $flags,
+			$flags & 0x00020000 ? "NEWNS " : "",
+			$flags & 0x02000000 ? "NEWCGROUP " : "",
+			$flags & 0x04000000 ? "NEWUTS " : "",
+			$flags & 0x08000000 ? "NEWIPC " : "",
+			$flags & 0x10000000 ? "NEWUSER " : "",
+			$flags & 0x20000000 ? "NEWPID " : "");
+	}
+}
+
+tracepoint:syscalls:sys_enter_setns
+{
+	printf("%-8u %-8d %-20s %-10s (entering existing namespace, fd=%d)\n",
+		elapsed / 1000000, pid, comm, "setns", args->fd);
+}

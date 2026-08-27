@@ -1,0 +1,4 @@
+Attached 4 probes
+TIME     PID      COMM                 SYSCALL    NAMESPACE FLAGS
+
+
