@@ -1,0 +1,131 @@
+{
+  "zizmor_default": {
+    "class-1-pr-target-exfil": {
+      "class": 1,
+      "name": "pull_request_target secret exfiltration",
+      "run": "default",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "dangerous-triggers"
+      ],
+      "detail": "dangerous-triggers at .github/workflows/pr-target-exfil.yml:29"
+    },
+    "class-2-script-injection": {
+      "class": 2,
+      "name": "Script injection via github.event",
+      "run": "default",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "template-injection"
+      ],
+      "detail": "template-injection at .github/workflows/script-injection.yml:43"
+    },
+    "class-3-cache-poisoning": {
+      "class": 3,
+      "name": "Actions cache poisoning",
+      "run": "default",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "cache-poisoning"
+      ],
+      "detail": "cache-poisoning at .github/workflows/cache-poison-restore.yml:28"
+    },
+    "class-4-self-hosted-runner": {
+      "class": 4,
+      "name": "Self-hosted runner pattern (planted, never executed)",
+      "run": "default",
+      "verdict": "FALSE_NEGATIVE",
+      "expected_rules": [
+        "self-hosted-runner"
+      ],
+      "detail": null
+    }
+  },
+  "zizmor_auditor": {
+    "class-1-pr-target-exfil": {
+      "class": 1,
+      "name": "pull_request_target secret exfiltration",
+      "run": "auditor",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "dangerous-triggers"
+      ],
+      "detail": "dangerous-triggers at .github/workflows/pr-target-exfil.yml:29"
+    },
+    "class-2-script-injection": {
+      "class": 2,
+      "name": "Script injection via github.event",
+      "run": "auditor",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "template-injection"
+      ],
+      "detail": "template-injection at .github/workflows/script-injection.yml:43"
+    },
+    "class-3-cache-poisoning": {
+      "class": 3,
+      "name": "Actions cache poisoning",
+      "run": "auditor",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "cache-poisoning"
+      ],
+      "detail": "cache-poisoning at .github/workflows/cache-poison-restore.yml:28"
+    },
+    "class-4-self-hosted-runner": {
+      "class": 4,
+      "name": "Self-hosted runner pattern (planted, never executed)",
+      "run": "auditor",
+      "verdict": "TRUE_POSITIVE",
+      "expected_rules": [
+        "self-hosted-runner"
+      ],
+      "detail": "self-hosted-runner at .github/workflows/self-hosted-runner-pattern.yml:64"
+    }
+  },
+  "zizmor_default_unmapped_idents": [
+    "artipacked",
+    "unpinned-uses"
+  ],
+  "zizmor_auditor_unmapped_idents": [
+    "anonymous-definition",
+    "artipacked",
+    "concurrency-limits",
+    "excessive-permissions",
+    "secrets-outside-env",
+    "undocumented-permissions",
+    "unpinned-uses"
+  ],
+  "zizmor_default_false_positives_on_mapped_rules": [],
+  "zizmor_auditor_false_positives_on_mapped_rules": [],
+  "scorecard": {
+    "class-1-pr-target-exfil": {
+      "class": 1,
+      "name": "pull_request_target secret exfiltration",
+      "verdict": "FLAGGED_FILE_LEVEL",
+      "detail": ".github/workflows/pr-target-exfil.yml:44 - Warn: untrusted code checkout '${{ github.event.pull_request.head.sha }}'",
+      "granularity": "file-level binary (Scorecard does not report a per-vulnerability-class rule id)"
+    },
+    "class-2-script-injection": {
+      "class": 2,
+      "name": "Script injection via github.event",
+      "verdict": "FLAGGED_FILE_LEVEL",
+      "detail": ".github/workflows/script-injection.yml:44 - Warn: script injection with untrusted input ' github.event.issue.title '",
+      "granularity": "file-level binary (Scorecard does not report a per-vulnerability-class rule id)"
+    },
+    "class-3-cache-poisoning": {
+      "class": 3,
+      "name": "Actions cache poisoning",
+      "verdict": "NOT_COVERED_BY_CHECK_DOCS",
+      "detail": null,
+      "granularity": "file-level binary (Scorecard does not report a per-vulnerability-class rule id)"
+    },
+    "class-4-self-hosted-runner": {
+      "class": 4,
+      "name": "Self-hosted runner pattern (planted, never executed)",
+      "verdict": "NOT_COVERED_BY_CHECK_DOCS",
+      "detail": null,
+      "granularity": "file-level binary (Scorecard does not report a per-vulnerability-class rule id)"
+    }
+  }
+}

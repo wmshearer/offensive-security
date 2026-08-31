@@ -1,0 +1,61 @@
+# GROUND TRUTH: class 3 — Actions cache poisoning (writer half)
+#
+# What this demonstrates:
+#   zizmor's own cache-poisoning rule doc describes the scenario this pair of
+#   workflows recreates: a workflow with a low-privilege, attacker-reachable
+#   trigger writes to a cache key that a later, higher-privilege workflow
+#   trusts and restores from, without re-validating its contents. GitHub's
+#   `actions/cache` scopes cache entries by key and by branch, but a cache
+#   written on a feature branch is restorable on that branch's own PR runs,
+#   and the restore key match here is intentionally loose (a fixed key with
+#   no content hash), so a later run keys off attacker-influenced content
+#   without re-verification.
+#
+# Pair: this file WRITES a cache entry under a predictable, unhashed key.
+# `cache-poison-restore.yml` is the higher-trust workflow that RESTORES from
+# the same key and executes what it finds, without verifying its contents.
+#
+# Safety boundaries:
+#   - Nothing here reads secrets or leaves GitHub. actions/cache is a
+#     GitHub-hosted cache backend; nothing is written to a third party.
+#   - The "poisoned" payload is an inert marker script, not any kind of
+#     working exploit payload beyond proving execution occurred.
+#
+# Planted vulnerability line: `key: build-cache-v1` below is a fixed,
+# predictable cache key with no hash of trusted inputs, combined with a
+# trigger (pull_request, same-repo branch) that lets any contributor
+# influence what gets written under that key.
+
+name: cache-poison-write (VULNERABLE - class 3, writer half)
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  write-attacker-influenced-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Attacker-influenced content: in a real attack this would be produced
+      # by code on the PR branch. Here we write it directly for lab clarity.
+      - name: Produce content that will be cached
+        run: |
+          mkdir -p build-cache
+          echo "#!/bin/sh" > build-cache/build-step.sh
+          echo "echo 'poisoned cache entry executed' > poisoned-proof.txt" >> build-cache/build-step.sh
+          chmod +x build-cache/build-step.sh
+
+      # VULNERABLE: fixed, predictable, unhashed cache key. Any workflow run
+      # on this trigger (including one driven by a PR from a feature branch)
+      # can write to this exact key, and any later run that restores it has
+      # no way to know the content came from an untrusted run.
+      - name: Cache build directory under a predictable key
+        uses: actions/cache@v4
+        with:
+          path: build-cache
+          key: build-cache-v1

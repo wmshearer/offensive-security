@@ -1,0 +1,62 @@
+# GROUND TRUTH: class 3 — Actions cache poisoning (restorer half)
+#
+# See cache-poison-write.yml for the full class explanation. This is the
+# higher-trust half of the pair: a release workflow that restores from the
+# same predictable cache key and executes whatever it finds there, without
+# verifying the content's provenance.
+#
+# Trigger note: zizmor's own cache-poisoning rule (confirmed by reading
+# crates/zizmor/src/audit/cache_poisoning.rs) only flags a cache-aware step
+# inside a job it recognizes as a RELEASE workflow: triggered by a tag push,
+# a `release` event, a branch name containing "release", or the use of a
+# well-known publisher action (e.g. softprops/action-gh-release). A plain
+# `push: branches: [main]` trigger does not match any of those heuristics
+# and would NOT be flagged, which is itself a documented, evidence-backed
+# scoping detail about the rule (see FINDINGS.md). This workflow uses a tag
+# push trigger so the planted case falls inside the rule's own definition of
+# a release workflow, matching the real-world scenario zizmor's own audit
+# doc describes ("release workflows leverage build state cached from
+# previous workflow executions").
+#
+# Planted vulnerability line: `key: build-cache-v1` matches the writer
+# workflow's key exactly, and the restored script is executed
+# (`./build-cache/build-step.sh`) with no integrity check (no hash pin, no
+# signature) between restore and execution.
+
+name: cache-poison-restore (VULNERABLE - class 3, restorer half)
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: read
+
+jobs:
+  restore-and-trust-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # VULNERABLE: restores from the same predictable key the low-privilege
+      # writer workflow can write to, with no content verification.
+      - name: Restore build cache
+        uses: actions/cache@v4
+        with:
+          path: build-cache
+          key: build-cache-v1
+
+      # VULNERABLE: executes the restored content directly. If the cache
+      # entry above was written by an attacker-influenced PR run, this
+      # release run (triggered on a tag push, a higher-trust event) now
+      # executes attacker-influenced code with whatever privileges this job
+      # has.
+      - name: Execute cached build step (no integrity check)
+        run: |
+          if [ -f build-cache/build-step.sh ]; then
+            chmod +x build-cache/build-step.sh
+            ./build-cache/build-step.sh
+          else
+            echo "No cache entry found (expected on first run)."
+          fi

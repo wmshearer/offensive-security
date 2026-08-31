@@ -1,0 +1,69 @@
+# GROUND TRUTH: class 4 — self-hosted runner, STATIC PATTERN ONLY
+#
+# =============================================================================
+# THIS WORKFLOW IS NEVER TRIGGERED AND NEVER EXECUTED. IT EXISTS ONLY AS A
+# STATIC YAML ARTIFACT FOR THE SCANNERS (zizmor, Scorecard) TO ANALYZE.
+# NO SELF-HOSTED RUNNER HAS BEEN OR WILL BE REGISTERED FOR THIS REPOSITORY,
+# ON THIS MACHINE OR ANY OTHER.
+# =============================================================================
+#
+# Why this is planted but never run:
+#   GitHub's own security guidance states that self-hosted runners "should
+#   almost never be used for public repositories" because any user who can
+#   open a pull request can execute code on that runner's host, and even on
+#   private repos any collaborator who can open a branch PR has the same
+#   capability against that machine. Registering a self-hosted runner on the
+#   researcher's own machine to "prove" this class would mean an internet-
+#   reachable process (the runner's job poller) could execute
+#   attacker-influenced code with access to that filesystem. That is a
+#   materially different risk than classes 1, 2, 3, and 5, which execute only
+#   inside GitHub-hosted, ephemeral, GitHub-owned VMs. See README.md "Safety
+#   and scope" for the full reasoning.
+#
+#   Both scanners under test read workflow YAML statically; neither one
+#   executes a workflow to produce a finding. zizmor's own self-hosted-runner
+#   rule (crates/zizmor/src/audit/self_hosted_runner.rs) is confirmed, by
+#   reading its source, to be a pure static match against the literal value
+#   of the `runs-on:` key -- it fires on the text "self-hosted" appearing
+#   there, with nothing ever executing. So planting this pattern and never
+#   triggering it does not weaken the measurement: the rule that is supposed
+#   to catch this class is looking at exactly the line below, not at runtime
+#   behavior.
+#
+# The disabled `on:` trigger below (workflow_dispatch only, never invoked in
+# practice) exists so the file parses as a valid, complete workflow for the
+# scanners to analyze; it is not invoked as part of this project's evidence
+# collection.
+#
+# Planted vulnerability line: `runs-on: self-hosted` below, combined with a
+# fork-triggerable-shaped trigger (pull_request_target) and no environment
+# protection rule gating the job. In a real (never executed here) deployment
+# this combination would let any PR author run code on the runner's host.
+
+name: self-hosted-runner-pattern (VULNERABLE PATTERN - class 4, NOT EXECUTED)
+
+on:
+  # workflow_dispatch is the least-automatically-triggerable event GitHub
+  # offers; even so, this workflow's dispatch has never been invoked. The
+  # commented pull_request_target trigger below shows the actual dangerous
+  # shape (fork/branch-PR-reachable) that this pattern would have in a real
+  # deployment, without making this file dispatchable by that path.
+  workflow_dispatch:
+  # pull_request_target:
+  #   branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  # VULNERABLE PATTERN, NEVER EXECUTED: runs-on: self-hosted with no
+  # environment protection rule and (in the commented trigger above) a
+  # fork/branch-PR-reachable event. This job has no `environment:` key,
+  # meaning GitHub would not require manual approval before a run.
+  build-on-self-hosted:
+    runs-on: self-hosted
+    steps:
+      - name: This step is never executed
+        run: |
+          echo "This job is static-only. No self-hosted runner is registered."
+          echo "This line exists only so the workflow YAML is syntactically complete."

@@ -1,0 +1,56 @@
+# GROUND TRUTH: class 2 — script injection via github.event
+#
+# What this demonstrates:
+#   GitHub's docs give the exact vulnerable idiom: interpolating an untrusted
+#   event field (issue title, PR title, branch name, commit message, etc.)
+#   directly into a `run:` block's shell string. Because `${{ }}` expressions
+#   are substituted into the YAML *before* the shell ever sees the line, an
+#   attacker who controls the value of `github.event.issue.title` controls
+#   raw text that becomes part of the shell command. A title like
+#   `"; touch pwned; echo "` closes the intended string and injects new shell
+#   commands.
+#   (https://docs.github.com/en/actions/reference/security/secure-use)
+#
+# Safety boundaries:
+#   - The payload only ever writes a benign marker file inside the runner's
+#     own throwaway VM and logs it as a step-summary. No persistence beyond
+#     the job, no network egress, no secrets are read by this workflow at all.
+#   - Triggered by opening/editing an issue in this repo, a fully self-
+#     contained, single-account action.
+#
+# Planted vulnerability line: the `run:` block below interpolates
+# `github.event.issue.title` directly instead of passing it through an
+# environment variable first (GitHub's own documented mitigation).
+
+name: script-injection (VULNERABLE - class 2)
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  contents: read
+
+jobs:
+  vulnerable-inline-interpolation:
+    runs-on: ubuntu-latest
+    steps:
+      # VULNERABLE: github.event.issue.title is attacker-controlled text
+      # (anyone who can open an issue controls it) and is interpolated
+      # directly into the run: block's shell string, rather than being
+      # passed through `env:` first. This is textually identical to the
+      # vulnerable idiom GitHub's secure-use documentation calls out.
+      - name: Echo issue title (unsafe interpolation)
+        run: |
+          echo "Processing issue: ${{ github.event.issue.title }}"
+          echo "Injection demo: ${{ github.event.issue.title }}" >> "$GITHUB_STEP_SUMMARY"
+
+      # Safe alternative, included for contrast per GitHub's documented
+      # mitigation: pass the untrusted value through an environment variable
+      # instead of interpolating it into the script text. The shell expands
+      # $ISSUE_TITLE as data, never as command syntax.
+      - name: Echo issue title (safe pattern, for contrast)
+        env:
+          ISSUE_TITLE: ${{ github.event.issue.title }}
+        run: |
+          echo "Processing issue safely: $ISSUE_TITLE"

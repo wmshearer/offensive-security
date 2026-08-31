@@ -1,0 +1,8 @@
+ INFO zizmor: 🌈 zizmor v1.30.0
+ WARN audit: zizmor: zizmor is running in offline mode by default; some audits and auto-fixes will not be available. see https://docs.zizmor.sh/usage/#operating-modes for details
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-restore.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-write.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/oidc-debug.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/pr-target-exfil.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/script-injection.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/self-hosted-runner-pattern.yml

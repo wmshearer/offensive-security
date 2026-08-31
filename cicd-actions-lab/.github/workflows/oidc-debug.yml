@@ -1,0 +1,49 @@
+# GROUND TRUTH: class 5 — OIDC wildcard `sub` misconfiguration, ANALYTICAL ONLY
+#
+# What this workflow does (and does not do):
+#   This workflow runs GitHub's own official OIDC debugging action,
+#   `github/actions-oidc-debugger`. That action requests a real OpenID
+#   Connect JSON Web Token from GitHub's OIDC provider and prints its claims
+#   (`sub`, `aud`, `repository`, `ref`, etc.) to the job log. No cloud
+#   provider (AWS, Azure, GCP) is contacted at any point. No cloud account
+#   exists for this project and none is created.
+#   (https://docs.github.com/en/actions/reference/openid-connect-reference)
+#
+#   The vulnerability this class is about does NOT live in this YAML file at
+#   all -- it lives in a cloud-side IAM trust policy (e.g. an AWS IAM role's
+#   trust relationship) that uses a wildcard match on the `sub` claim, such
+#   as `repo:someorg/*:*`, instead of pinning it to an exact repository and
+#   ref. That trust policy is analyzed separately, statically, in
+#   docs/oidc-trust-policy-analysis.md, using the real claims this workflow
+#   captures. This workflow's only job is to produce a real `sub` value to
+#   analyze against; it never assumes any cloud role.
+#
+# Safety boundaries:
+#   - `id-token: write` is required for any workflow to request an OIDC
+#     token at all; it is scoped to this job only.
+#   - No `aws-actions/configure-aws-credentials` or any cloud-provider auth
+#     action appears anywhere in this repository.
+#   - Any real token value in captured output is redacted before being
+#     committed as evidence (see evidence/README.md and
+#     docs/oidc-trust-policy-analysis.md for the redaction policy).
+
+name: oidc-debug (ANALYTICAL ONLY - class 5)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  mint-and-print-oidc-claims:
+    runs-on: ubuntu-latest
+    steps:
+      # Official GitHub action: requests a real OIDC token from GitHub's own
+      # provider and prints its decoded claims. No cloud provider is
+      # involved. See https://github.com/github/actions-oidc-debugger.
+      - name: Mint and print OIDC token claims
+        uses: github/actions-oidc-debugger@main
+        with:
+          audience: "https://github.com/wmshearer"
