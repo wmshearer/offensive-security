@@ -40,10 +40,33 @@ jobs:
   mint-and-print-oidc-claims:
     runs-on: ubuntu-latest
     steps:
-      # Official GitHub action: requests a real OIDC token from GitHub's own
-      # provider and prints its decoded claims. No cloud provider is
-      # involved. See https://github.com/github/actions-oidc-debugger.
-      - name: Mint and print OIDC token claims
-        uses: github/actions-oidc-debugger@main
-        with:
-          audience: "https://github.com/wmshearer"
+      # Requests a real OIDC token from GitHub's own provider using the
+      # runtime environment variables GitHub injects when `id-token: write`
+      # is granted, then decodes and prints ONLY the claim set.
+      #
+      # This replaced `github/actions-oidc-debugger@main`, which no longer
+      # builds: its Dockerfile pins an exact Alpine Go package version
+      # (`apk add go=$(cat .go-version)-r0`) that Alpine no longer carries,
+      # so its image build fails with exit code 2 before the action runs.
+      # That is an upstream breakage in GitHub's own sample action, not a
+      # problem with this workflow. Calling the endpoint directly removes
+      # the dependency and does exactly what the action did.
+      - name: Mint OIDC token and print its claims
+        run: |
+          set -euo pipefail
+          TOKEN=$(curl -sS \
+            -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=https://github.com/wmshearer" \
+            | python3 -c 'import sys,json; print(json.load(sys.stdin)["value"])')
+
+          # A JWT is three dot-separated base64url parts: header.payload.signature.
+          # Only the payload (the claims) is decoded and printed. The signature
+          # is never printed, so nothing in the log can be replayed as a
+          # credential.
+          echo "$TOKEN" | cut -d. -f2 | python3 -c '
+          import sys, base64, json
+          raw = sys.stdin.read().strip()
+          raw += "=" * (-len(raw) % 4)
+          claims = json.loads(base64.urlsafe_b64decode(raw))
+          print(json.dumps(claims, indent=2, sort_keys=True))
+          '
