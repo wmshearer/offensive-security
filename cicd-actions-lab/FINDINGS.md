@@ -245,17 +245,27 @@ either tool's score on this project's actual question.
 
 ## What could not be verified live, and what was judged
 
-- **Class 5's captured OIDC token claims are pending the lab repository's
-  first workflow run.** `docs/oidc-trust-policy-analysis.md` documents the
-  expected claim shape from GitHub's own published `sub` format and shows
-  the wildcard-versus-scoped trust-policy comparison against that expected
-  shape. The section will be updated with the real, redacted claims once
-  `.github/workflows/oidc-debug.yml` has actually run on GitHub; this
-  local-only phase of the project could not trigger it, since the
-  workflow requires a real GitHub Actions run to mint a real OIDC token.
-  No zizmor or Scorecard result depends on this: both tools were run
-  against the workflow YAML as written, which is sufficient to confirm
-  neither one has any rule that references OIDC or a subject claim.
+- **Class 5's OIDC token claims are captured and real, not hypothetical.**
+  `.github/workflows/oidc-debug.yml` ran on GitHub Actions (run
+  `33453971610`) and requested a real OIDC token from GitHub's own
+  provider; the decoded claims are committed at
+  `evidence/oidc/claims_raw.json`, and `docs/oidc-trust-policy-analysis.md`
+  is written against those real values, not an expected shape. The
+  captured `sub`
+  (`repo:wmshearer@241811240/cicd-actions-lab@1352963523:ref:refs/heads/master`)
+  turned out to embed numeric owner and repository IDs rather than the
+  plain name-based form most existing documentation shows; this is
+  confirmed, against GitHub's own current OIDC reference documentation and
+  an April 2026 GitHub changelog post, to be a new default called
+  **immutable subject claims**, rolled out for repositories created after
+  July 15, 2026 (this repository was created 2026-08-31), not a
+  repository-level customization. `docs/oidc-trust-policy-analysis.md`
+  covers what this means for trust-policy strength. `claims_raw.json`
+  contains no signature, only the decoded payload, so nothing in it is a
+  replayable credential. No zizmor or Scorecard result depends on this:
+  both tools were run against the workflow YAML as written, which is
+  sufficient to confirm neither one has any rule that references OIDC or a
+  subject claim.
 - **The CWE mapping for class 4 (CWE-668) is stated as a moderate fit, not
   a strong one**, per the research this project's ground truth cites: CWE
   has no entry specific to a compute resource that is shared across
