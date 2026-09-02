@@ -1,5 +1,0 @@
-Attached 2 probes
-TIME     PID      COMM                 PID    TARGET   REQUEST
-829      3300087  gdb                  3300087 3299975  PTRACE_ATTACH
-
-

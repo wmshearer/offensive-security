@@ -1,0 +1,15 @@
+# PMKID positive capture vs negative control
+
+## test-pmkid.pcap: EAPOL message 1 frame(s) and PMKID field
+2	c2ea9449c142e84a0479041702526532	2
+
+## pmkid-not-recognized.cap: EAPOL message 1 frames carrying a PMKID KDE
+## (present in the frame, but with key descriptor version 0)
+16798	e79facd57cd689518fee257182116142	0
+18420	0e11497e8c3bf9c7445e5bf7f509d9bd	0
+19945	101eff05f4eb01af363ac2c2cde2d867	0
+
+tshark: The file "/home/kali/director/projects/wireless-protocol-analysis/captures/pmkid-not-recognized.cap" appears to have been cut short in the middle of a packet.
+
+## Total EAPOL message-1 frames in the negative control capture
+26

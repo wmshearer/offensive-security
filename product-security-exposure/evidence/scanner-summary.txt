@@ -1,9 +1,0 @@
-Image:            inference-service:1.0
-SBOM packages:    142
-Grype findings:   160
-  Critical        7
-  High            28
-  Medium          61
-
-Findings for gguf 0.19.0, the component with the known parser bug:
-  0

@@ -1,9 +1,0 @@
-{
-  "scenario": "benign",
-  "duration_sec": 10,
-  "probes": {
-    "mount": "evidence/raw/benign__mount.txt",
-    "ptrace": "evidence/raw/benign__ptrace.txt",
-    "sensitive_write": "evidence/raw/benign__sensitive_write.txt"
-  }
-}

@@ -32,9 +32,8 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-from sibling_path import find_project  # noqa: E402
 SIBLING_RUN = (
-    find_project("detection-rule-lab") / "reports" / "scoring-run.json"
+    ROOT.parent / "detection-rule-lab" / "reports" / "scoring-run.json"
 )
 
 

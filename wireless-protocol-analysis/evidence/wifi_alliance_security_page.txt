@@ -1,0 +1,12 @@
+Source: https://www.wi-fi.org/discover-wi-fi/security
+Fetched: 2026-08-28
+Section: WPA3 tab body text (extracted from page HTML, tags stripped)
+
+WPA3™ offers cutting-edge security protocols, simplifying Wi-Fi
+®
+security, enabling more robust authentication, delivering increased cryptographic strength for highly sensitive data markets, and maintaining the resiliency of mission-critical networks.
+WPA3 is mandatory for Wi-Fi CERTIFIED devices and includes additional capabilities specifically for personal and enterprise networks. Users of WPA3-Personal receive increased protections from password guessing attempts, while WPA3-Enterprise users can now take advantage of higher-grade security protocols for sensitive data networks.
+WPA3 networks:
+Use the latest security protocols
+Disallow outdated legacy protocols
+Require use of Protected Management Frames (PMF)

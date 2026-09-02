@@ -1,7 +1,0 @@
-CVE-2026-5450  libc-bin 2.41-12+deb13u3
-CVE-2026-5450  libc6 2.41-12+deb13u3
-CVE-2026-8376  perl-base 5.40.1-6
-CVE-2026-13221  perl-base 5.40.1-6
-CVE-2026-42496  perl-base 5.40.1-6
-CVE-2026-12087  perl-base 5.40.1-6
-CVE-2026-57433  perl-base 5.40.1-6

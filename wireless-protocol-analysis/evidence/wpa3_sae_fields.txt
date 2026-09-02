@@ -1,0 +1,72 @@
+# WPA3 SAE Commit/Confirm and subsequent 4-way handshake
+# Source: /home/kali/director/projects/wireless-protocol-analysis/captures/wpa3-psk.pcap
+
+## Full frame list
+    1   0.000000 02:00:00:00:00:00 → Broadcast    802.11 136 Beacon frame, SN=0, FN=0, Flags=........, BI=100, SSID="WPA3-Network"
+    2   0.085497 02:00:00:00:01:00 → Broadcast    802.11 105 Probe Request, SN=0, FN=0, Flags=........, SSID=Wildcard (Broadcast)
+    3   0.085789 02:00:00:00:00:00 → 02:00:00:00:01:00 802.11 130 Probe Response, SN=0, FN=0, Flags=........, BI=100, SSID="WPA3-Network"
+    4   0.085789              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+    5   3.634814 02:00:00:00:01:00 → 02:00:00:00:00:00 802.11 150 Authentication, SN=11, FN=0, Flags=........
+    6   3.634815              → 02:00:00:00:01:00 802.11 24 Acknowledgement, Flags=........
+    7   3.678653 02:00:00:00:00:00 → 02:00:00:00:01:00 802.11 150 Authentication, SN=1, FN=0, Flags=........
+    8   3.678654              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+    9   3.679780 02:00:00:00:01:00 → 02:00:00:00:00:00 802.11 86 Authentication, SN=12, FN=0, Flags=........
+   10   3.679781              → 02:00:00:00:01:00 802.11 24 Acknowledgement, Flags=........
+   11   3.681400 02:00:00:00:00:00 → 02:00:00:00:01:00 802.11 86 Authentication, SN=2, FN=0, Flags=........
+   12   3.681400              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+   13   3.686583 02:00:00:00:01:00 → 02:00:00:00:00:00 802.11 141 Association Request, SN=13, FN=0, Flags=........, SSID="WPA3-Network"
+   14   3.686584              → 02:00:00:00:01:00 802.11 24 Acknowledgement, Flags=........
+   15   3.686761 02:00:00:00:00:00 → 02:00:00:00:01:00 802.11 78 Association Response, SN=3, FN=0, Flags=........
+   16   3.686762              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+   17   3.689229 02:00:00:00:00:00 → 02:00:00:00:01:00 EAPOL 175 Key (Message 1 of 4)
+   18   3.689230              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+   19   3.783343 02:00:00:00:01:00 → 02:00:00:00:00:00 EAPOL 181 Key (Message 2 of 4)
+   20   3.783346              → 02:00:00:00:01:00 802.11 24 Acknowledgement, Flags=........
+   21   3.783713 02:00:00:00:00:00 → 02:00:00:00:01:00 EAPOL 241 Key (Message 3 of 4)
+   22   3.783714              → 02:00:00:00:00:00 802.11 24 Acknowledgement, Flags=........
+   23   3.829218 02:00:00:00:01:00 → 02:00:00:00:00:00 EAPOL 153 Key (Message 4 of 4)
+   24   3.829219              → 02:00:00:00:01:00 802.11 24 Acknowledgement, Flags=........
+
+## SAE Authentication frames (subtype 0x000b): seq, algorithm, status
+5	3	0x0001	0x0000
+7	3	0x0001	0x0000
+9	3	0x0002	0x0000
+11	3	0x0002	0x0000
+
+## SAE Commit frame detail (frame 5)
+IEEE 802.11 Authentication, Flags: ........
+    Type/Subtype: Authentication (0x000b)
+    Frame Control Field: 0xb000
+        .... ..00 = Version: 0
+        .... 00.. = Type: Management frame (0)
+        1011 .... = Subtype: 11
+        Flags: 0x00
+            .... ..00 = DS status: Not leaving DS or network is operating in AD-HOC mode (To DS: 0 From DS: 0) (0x0)
+            .... .0.. = More Fragments: This is the last fragment
+            .... 0... = Retry: Frame is not being retransmitted
+            ...0 .... = PWR MGT: STA will stay up
+            ..0. .... = More Data: No data buffered
+            .0.. .... = Protected flag: Data is not protected
+            0... .... = +HTC/Order flag: Not strictly ordered
+    .000 0001 0011 1010 = Duration: 314 microseconds
+    Receiver address: 02:00:00:00:00:00 (02:00:00:00:00:00)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Destination address: 02:00:00:00:00:00 (02:00:00:00:00:00)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Transmitter address: 02:00:00:00:01:00 (02:00:00:00:01:00)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    Source address: 02:00:00:00:01:00 (02:00:00:00:01:00)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+    BSS Id: 02:00:00:00:00:00 (02:00:00:00:00:00)
+        .... ..1. .... .... .... .... = LG bit: Locally administered address (this is NOT the factory default)
+        .... ...0 .... .... .... .... = IG bit: Individual address (unicast)
+
+## Post-SAE four-way handshake: msgnr, nonce, mic (same structure as WPA2)
+17	1	f933c67a981213d79abe4c2ad46633b62add250a19dec6d54849c6ce92b841b6	00000000000000000000000000000000
+19	2	a1a02e1e0cd833a2814654c97a5aecc07332972d361a977472fb904a0e728d6f	7fe6b9f3f123b02837a8721c7eea22dd
+21	3	f933c67a981213d79abe4c2ad46633b62add250a19dec6d54849c6ce92b841b6	45f0437ad26216e2d44eef35d135fc89
+23	4	0000000000000000000000000000000000000000000000000000000000000000	d200a757aba852921cdf21211be5a71c

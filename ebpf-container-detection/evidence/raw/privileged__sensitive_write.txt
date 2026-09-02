@@ -1,5 +1,0 @@
-Attached 3 probes
-TIME     PID      COMM                 MODE   SYSCALL  PATH
-1338     3292544  sh                   WR     open     /proc/sys/kernel/core_pattern
-
-

@@ -1,0 +1,31 @@
+{
+  "name": "openapi-security-analyzer",
+  "version": "0.1.0",
+  "description": "Static security analysis and version-diff for OpenAPI specifications",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wmshearer/openapi-security-analyzer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/wmshearer/openapi-security-analyzer/issues"
+  },
+  "homepage": "https://github.com/wmshearer/openapi-security-analyzer#readme",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.2.0",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.11"
+  }
+}

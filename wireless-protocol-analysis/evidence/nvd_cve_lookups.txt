@@ -1,0 +1,34 @@
+Source: https://services.nvd.nist.gov/rest/json/cves/2.0?cveId=<CVE-ID>
+Fetched: 2026-08-28
+Cross-checked against: https://www.kb.cert.org/vuls/id/871675 (CERT/CC VU#871675, cited as reference [17] in Dragonblood)
+
+=== CVE-2019-9494 ===
+Status: Modified
+Published: 2019-04-17T14:29:03.840
+Description: The implementations of SAE in hostapd and wpa_supplicant are vulnerable to side channel attacks as a result of observable timing differences and cache access patterns. An attacker may be able to gain leaked information from a side channel attack that can be used for full password recovery. Both hostapd with SAE support and wpa_supplicant with SAE support prior to and including version 2.7 are affected.
+
+=== CVE-2019-9495 ===
+Status: Modified
+Published: 2019-04-17T14:29:03.887
+Description: The implementations of EAP-PWD in hostapd and wpa_supplicant are vulnerable to side-channel attacks as a result of cache access patterns. All versions of hostapd and wpa_supplicant with EAP-PWD support are vulnerable. The ability to install and execute applications is necessary for a successful attack. Memory access patterns are visible in a shared cache. Weak passwords may be cracked. Versions of hostapd/wpa_supplicant 2.7 and newer, are not vulnerable to the timing attack described in CVE-2019-9494. Both hostapd with EAP-pwd support and wpa_supplicant with EAP-pwd support prior to and including version 2.7 are affected.
+
+=== CVE-2019-9496 ===
+Status: Modified
+Published: 2019-04-17T14:29:03.917
+Description: An invalid authentication sequence could result in the hostapd process terminating due to missing state validation steps when processing the SAE confirm message when in hostapd/AP mode. All version of hostapd with SAE support are vulnerable. An attacker may force the hostapd process to terminate, performing a denial of service attack. Both hostapd with SAE support and wpa_supplicant with SAE support prior to and including version 2.7 are affected.
+
+=== CVE-2019-9497 ===
+Status: Modified
+Published: 2019-04-17T14:29:03.963
+Description: The implementations of EAP-PWD in hostapd EAP Server and wpa_supplicant EAP Peer do not validate the scalar and element values in EAP-pwd-Commit. This vulnerability may allow an attacker to complete EAP-PWD authentication without knowing the password. However, unless the crypto library does not implement additional checks for the EC point, the attacker will not be able to derive the session key or complete the key exchange. Both hostapd with SAE support and wpa_supplicant with SAE support prior to and including version 2.4 are affected. Both hostapd with EAP-pwd support and wpa_supplicant with EAP-pwd support prior to and including version 2.7 are affected.
+
+=== CVE-2019-9498 ===
+Status: Modified
+Published: 2019-04-17T14:29:04.010
+Description: The implementations of EAP-PWD in hostapd EAP Server, when built against a crypto library missing explicit validation on imported elements, do not validate the scalar and element values in EAP-pwd-Commit. An attacker may be able to use invalid scalar/element values to complete authentication, gaining session key and network access without needing or learning the password. Both hostapd with SAE support and wpa_supplicant with SAE support prior to and including version 2.4 are affected. Both hostapd with EAP-pwd support and wpa_supplicant with EAP-pwd support prior to and including version 2.7 are affected.
+
+=== CVE-2019-9499 ===
+Status: Modified
+Published: 2019-04-17T14:29:04.057
+Description: The implementations of EAP-PWD in wpa_supplicant EAP Peer, when built against a crypto library missing explicit validation on imported elements, do not validate the scalar and element values in EAP-pwd-Commit. An attacker may complete authentication, session key and control of the data connection with a client. Both hostapd with SAE support and wpa_supplicant with SAE support prior to and including version 2.4 are affected. Both hostapd with EAP-pwd support and wpa_supplicant with EAP-pwd support prior to and including version 2.7 are affected.
+
