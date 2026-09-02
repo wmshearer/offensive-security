@@ -1,0 +1,169 @@
+ INFO zizmor: 🌈 zizmor v1.30.0
+ WARN audit: zizmor: zizmor is running in offline mode by default; some audits and auto-fixes will not be available. see https://docs.zizmor.sh/usage/#operating-modes for details
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-restore.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-write.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/oidc-debug.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/pr-target-exfil.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/script-injection.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/self-hosted-runner-pattern.yml
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/cache-poison-restore.yml:40:9
+   |
+40 |         - uses: actions/checkout@v4
+   |  _________^
+41 | |
+42 | |       # VULNERABLE: restores from the same predictable key the low-privilege
+43 | |       # writer workflow can write to, with no content verification.
+   | |___________________________________________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-restore.yml:40:15
+   |
+40 |       - uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-restore.yml:45:15
+   |
+45 |         uses: actions/cache@v4
+   |               ^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[cache-poisoning]: runtime artifacts potentially vulnerable to a cache poisoning attack
+  --> .github/workflows/cache-poison-restore.yml:45:9
+   |
+28 | / on:
+29 | |   push:
+30 | |     tags:
+31 | |       - "v*"
+   | |____________- generally used when publishing artifacts generated at runtime
+...
+45 |           uses: actions/cache@v4
+   |           ^^^^^^^^^^^^^^^^^^^^^^ omitting `lookup-only` enables caching
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#cache-poisoning
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/cache-poison-write.yml:42:9
+   |
+42 |         - uses: actions/checkout@v4
+   |  _________^
+43 | |
+44 | |       # Attacker-influenced content: in a real attack this would be produced
+45 | |       # by code on the PR branch. Here we write it directly for lab clarity.
+   | |____________________________________________________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-write.yml:42:15
+   |
+42 |       - uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-write.yml:58:15
+   |
+58 |         uses: actions/cache@v4
+   |               ^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/oidc-debug.yml:47:15
+   |
+47 |         uses: github/actions-oidc-debugger@main
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/pr-target-exfil.yml:44:9
+   |
+44 |         - name: Check out PR head ref
+   |  _________^
+45 | |         uses: actions/checkout@v4
+46 | |         with:
+47 | |           ref: ${{ github.event.pull_request.head.sha }}
+...  |
+53 | |       # malicious file, but the effect (secret read by code influenced by the
+54 | |       # untrusted ref) is the same.
+   | |___________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[dangerous-triggers]: use of fundamentally insecure workflow trigger
+  --> .github/workflows/pr-target-exfil.yml:29:1
+   |
+29 | / on:
+30 | |   pull_request_target:
+31 | |     branches: [main]
+   | |____________________^ pull_request_target is almost always used insecurely
+   |
+   = note: audit confidence → Medium
+   = help: audit documentation → https://docs.zizmor.sh/audits/#dangerous-triggers
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/pr-target-exfil.yml:45:15
+   |
+45 |         uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/pr-target-exfil.yml:69:15
+   |
+69 |         uses: actions/upload-artifact@v4
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/script-injection.yml:45:39
+   |
+44 |         run: |
+   |         --- this run block
+45 |           echo "Processing issue: ${{ github.event.issue.title }}"
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/script-injection.yml:46:37
+   |
+44 |         run: |
+   |         --- this run block
+45 |           echo "Processing issue: ${{ github.event.issue.title }}"
+46 |           echo "Injection demo: ${{ github.event.issue.title }}" >> "$GITHUB_STEP_SUMMARY"
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+30 findings (16 suppressed, 6 unsafe fixes): 0 informational, 0 low, 3 medium, 11 high

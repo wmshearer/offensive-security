@@ -1,0 +1,171 @@
+# Ground truth manifest for the cicd-actions-lab planted vulnerability corpus.
+#
+# Every entry below is a planted, known vulnerability, not a hypothesis. Line
+# numbers are exact (1-indexed) as of the commit that ships this file; if a
+# workflow file is edited later, re-verify line numbers with grep before
+# trusting this manifest again.
+#
+# "cwe" is null where no CWE mapping is a good fit (see FINDINGS.md for the
+# full reasoning on class 5); "cwe_note" records the closest weak candidate
+# where one exists, without treating it as confirmed.
+#
+# "expected_detectors" names which scanner rule(s), if any, are expected to
+# find this by design (see .research/incoming/cicd-actions-lab.md and
+# FINDINGS.md for the verified source of each rule mapping). This field
+# records the hypothesis being tested; scored.py computes whether the
+# hypothesis held from raw tool output, it does not assume it.
+
+version: 1
+generated: 2026-08-31
+
+cases:
+  - id: class-1-pr-target-exfil
+    class: 1
+    name: "pull_request_target secret exfiltration"
+    file: .github/workflows/pr-target-exfil.yml
+    line: 30
+    line_range: [29, 47]
+    line_note: >
+      the `on:` trigger block spans lines 29-31 (`on:` itself at 29,
+      `pull_request_target:` at 30); the checkout-of-untrusted-ref step is
+      lines 44-47. A scanner may report either sub-location as the finding
+      site; line_range covers both legitimately.
+    additional_lines: [29, 45, 47]
+    cwe: "CWE-829"
+    cwe_title: "Inclusion of Functionality from Untrusted Control Sphere"
+    cwe_source: "https://cwe.mitre.org/data/definitions/829.html"
+    rationale: >
+      A pull_request_target-triggered job runs with base-repo privileges
+      (including secrets access) while checking out the PR's own head ref,
+      i.e. content from a branch an untrusted contributor controls. Untrusted
+      code is thereby included into a privileged execution control sphere.
+      GitHub's own secure-use documentation names this exact combination as
+      the dangerous pattern.
+    expected_detectors:
+      zizmor: "dangerous-triggers"
+      scorecard: "Dangerous-Workflow (untrusted code checkout sub-check)"
+
+  - id: class-2-script-injection
+    class: 2
+    name: "Script injection via github.event"
+    file: .github/workflows/script-injection.yml
+    line: 45
+    line_range: [43, 46]
+    line_note: >
+      the vulnerable step spans lines 43-46 (`- name: Echo issue title
+      (unsafe interpolation)` at 43, `run: |` at 44, the two unsafe
+      interpolations at 45 and 46). A scanner may anchor on the step header
+      or on the exact expression line; line_range covers both.
+    additional_lines: [43, 44, 46]
+    cwe: "CWE-94"
+    cwe_title: "Improper Control of Generation of Code ('Code Injection')"
+    cwe_source: "https://cwe.mitre.org/data/definitions/94.html"
+    rationale: >
+      github.event.issue.title is attacker-controlled text (anyone who can
+      open an issue sets it). Because ${{ }} expressions are substituted into
+      the YAML before the shell runs, an attacker-chosen title can close the
+      intended string and inject arbitrary shell syntax into the run: block.
+      This is the exact vulnerable idiom GitHub's secure-use docs describe.
+    expected_detectors:
+      zizmor: "template-injection"
+      scorecard: "Dangerous-Workflow (script injection with untrusted context variables sub-check)"
+
+  - id: class-3-cache-poisoning
+    class: 3
+    name: "Actions cache poisoning"
+    file: .github/workflows/cache-poison-write.yml
+    line: 61
+    line_range: [61, 61]
+    line_note: "fixed, unhashed cache key `build-cache-v1`, writable from a pull_request-triggered (branch-PR-reachable) job"
+    paired_file: .github/workflows/cache-poison-restore.yml
+    paired_line: 48
+    paired_line_range: [26, 48]
+    paired_line_note: >
+      same fixed key restored (line 48) and, at line 59, executed with no
+      integrity check by a tag-push (release, higher-trust) job. zizmor's
+      own cache-poisoning rule (confirmed from source) reports this finding
+      anywhere across the job it identifies as release-shaped, including the
+      job's `name:` line (26) and the specific cache-restore step lines
+      (47-48); line_range covers the whole job body.
+    cwe: "CWE-829"
+    cwe_title: "Inclusion of Functionality from Untrusted Control Sphere"
+    cwe_source: "https://cwe.mitre.org/data/definitions/829.html"
+    rationale: >
+      A predictable, unhashed cache key is written by a low-privilege,
+      branch-PR-reachable workflow and restored, without content
+      verification, by a higher-privilege workflow that then executes the
+      restored content. The trusted build treats an attacker-writable cache
+      entry as part of its own control sphere.
+    expected_detectors:
+      zizmor: "cache-poisoning"
+      scorecard: "none (not covered by Dangerous-Workflow per its own docs)"
+
+  - id: class-4-self-hosted-runner
+    class: 4
+    name: "Self-hosted runner pattern (planted, never executed)"
+    file: .github/workflows/self-hosted-runner-pattern.yml
+    line: 64
+    line_range: [63, 64]
+    line_note: "runs-on: self-hosted at line 64, job name at line 63, with no environment protection rule"
+    cwe: "CWE-668"
+    cwe_title: "Exposure of Resource to Wrong Control Sphere"
+    cwe_source: "https://cwe.mitre.org/data/definitions/668.html"
+    cwe_fit: "moderate"
+    cwe_fit_note: >
+      Moderate fit only. CWE has no entry specific to "a persistent compute
+      resource shared across untrusted job executions," which is the precise
+      mechanism that makes self-hosted runners risky for fork/branch-PR-
+      reachable workflows. CWE-668 is the closest available weakness class,
+      not a precise match. See FINDINGS.md for candidates considered and
+      rejected (CWE-250, CWE-269).
+    rationale: >
+      A workflow with runs-on: self-hosted and no environment protection
+      rule, if it were triggered by a fork- or branch-PR-reachable event,
+      would let any PR author execute code on the runner's host. This
+      workflow is planted as a static YAML artifact ONLY; it has never been
+      triggered and no self-hosted runner has been or will be registered.
+      Both scanners under test read workflow YAML statically, so the planted
+      pattern is sufficient to test detection without ever executing it.
+    expected_detectors:
+      zizmor: "self-hosted-runner (Auditor persona only, NOT in default output; see FINDINGS.md for the default-vs-auditor run comparison)"
+      scorecard: "none (not covered by Dangerous-Workflow per its own docs)"
+
+  - id: class-5-oidc-wildcard
+    class: 5
+    name: "OIDC wildcard sub trust-policy misconfiguration"
+    file: docs/oidc-trust-policy-analysis.md
+    line: null
+    line_note: >
+      This vulnerability does not live in any workflow YAML in this repo. It
+      lives in a hypothetical cloud-side IAM trust policy, analyzed
+      statically in docs/oidc-trust-policy-analysis.md against a real OIDC
+      token's claims captured by .github/workflows/oidc-debug.yml. No cloud
+      account exists and no cloud role is ever assumed.
+    source_workflow: .github/workflows/oidc-debug.yml
+    cwe: null
+    cwe_title: null
+    cwe_note: >
+      No CWE ID fits this misconfiguration well. Candidates checked and
+      rejected: CWE-1357 (Reliance on Insufficiently Trustworthy Component,
+      about supply-chain trust not claim scoping), CWE-501 (Trust Boundary
+      Violation, about mixing trusted/untrusted data in one structure, not
+      authorization-policy scoping), CWE-296 (Improper Following of a
+      Certificate's Chain of Trust, about cert chain validation, not
+      claim-based authorization). Closest generic candidate is CWE-285
+      (Improper Authorization), reported here only as the weak generic
+      candidate, not as a confirmed mapping. A forced mapping is worse than
+      none.
+    cwe_weak_candidate: "CWE-285"
+    cwe_weak_candidate_source: "https://cwe.mitre.org/data/definitions/285.html"
+    rationale: >
+      An IAM trust policy that matches the OIDC `sub` claim with a wildcard
+      (e.g. StringLike "repo:someorg/*:*") instead of pinning it to an exact
+      repository and ref (StringEquals with the real sub value) allows any
+      workflow in the wildcard-matched scope, including one running on an
+      attacker-controlled fork or branch, to assume the trusted cloud role.
+      This is demonstrated analytically: a real token's claims are captured,
+      then a sample wildcard trust-policy string is shown to match those
+      claims, without ever assuming a cloud role.
+    expected_detectors:
+      zizmor: "none - structurally cannot detect; the vulnerable artifact (cloud IAM trust policy) is not GitHub Actions YAML and zizmor does not parse it"
+      scorecard: "none - not covered by Dangerous-Workflow or any other documented check"

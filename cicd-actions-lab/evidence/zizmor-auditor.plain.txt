@@ -1,0 +1,356 @@
+ INFO zizmor: 🌈 zizmor v1.30.0
+ WARN audit: zizmor: zizmor is running in offline mode by default; some audits and auto-fixes will not be available. see https://docs.zizmor.sh/usage/#operating-modes for details
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-restore.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/cache-poison-write.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/oidc-debug.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/pr-target-exfil.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/script-injection.yml
+ INFO audit: zizmor: 🌈 completed .github/workflows/self-hosted-runner-pattern.yml
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/cache-poison-restore.yml:40:9
+   |
+40 |         - uses: actions/checkout@v4
+   |  _________^
+41 | |
+42 | |       # VULNERABLE: restores from the same predictable key the low-privilege
+43 | |       # writer workflow can write to, with no content verification.
+   | |___________________________________________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-restore.yml:40:15
+   |
+40 |       - uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-restore.yml:45:15
+   |
+45 |         uses: actions/cache@v4
+   |               ^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[cache-poisoning]: runtime artifacts potentially vulnerable to a cache poisoning attack
+  --> .github/workflows/cache-poison-restore.yml:45:9
+   |
+28 | / on:
+29 | |   push:
+30 | |     tags:
+31 | |       - "v*"
+   | |____________- generally used when publishing artifacts generated at runtime
+...
+45 |           uses: actions/cache@v4
+   |           ^^^^^^^^^^^^^^^^^^^^^^ omitting `lookup-only` enables caching
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#cache-poisoning
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/cache-poison-restore.yml:37:3
+   |
+37 |   restore-and-trust-cache:
+   |   ^^^^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/cache-poison-restore.yml:28:1
+   |
+28 | / on:
+29 | |   push:
+30 | |     tags:
+31 | |       - "v*"
+   | |____________^ workflow is missing concurrency setting
+...
+37 |     restore-and-trust-cache:
+   |     ----------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/cache-poison-write.yml:42:9
+   |
+42 |         - uses: actions/checkout@v4
+   |  _________^
+43 | |
+44 | |       # Attacker-influenced content: in a real attack this would be produced
+45 | |       # by code on the PR branch. Here we write it directly for lab clarity.
+   | |____________________________________________________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-write.yml:42:15
+   |
+42 |       - uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/cache-poison-write.yml:58:15
+   |
+58 |         uses: actions/cache@v4
+   |               ^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/cache-poison-write.yml:39:3
+   |
+39 |   write-attacker-influenced-cache:
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/cache-poison-write.yml:31:1
+   |
+31 | / on:
+32 | |   pull_request:
+33 | |     branches: [main]
+   | |____________________^ workflow is missing concurrency setting
+...
+39 |     write-attacker-influenced-cache:
+   |     ------------------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+error[excessive-permissions]: overly broad permissions
+  --> .github/workflows/oidc-debug.yml:36:3
+   |
+36 |   id-token: write
+   |   ^^^^^^^^^^^^^^^ id-token: write is overly broad at the workflow level
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#excessive-permissions
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/oidc-debug.yml:47:15
+   |
+47 |         uses: github/actions-oidc-debugger@main
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+help[undocumented-permissions]: permissions without explanatory comments
+  --> .github/workflows/oidc-debug.yml:36:3
+   |
+36 |   id-token: write
+   |   ^^^^^^^^^^^^^^^ needs an explanatory comment
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#undocumented-permissions
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/oidc-debug.yml:40:3
+   |
+40 |   mint-and-print-oidc-claims:
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/oidc-debug.yml:32:1
+   |
+32 | / on:
+33 | |   workflow_dispatch:
+   | |____________________^ workflow is missing concurrency setting
+...
+40 |     mint-and-print-oidc-claims:
+   |     -------------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+warning[artipacked]: credential persistence through GitHub Actions artifacts
+  --> .github/workflows/pr-target-exfil.yml:44:9
+   |
+44 |         - name: Check out PR head ref
+   |  _________^
+45 | |         uses: actions/checkout@v4
+46 | |         with:
+47 | |           ref: ${{ github.event.pull_request.head.sha }}
+...  |
+53 | |       # malicious file, but the effect (secret read by code influenced by the
+54 | |       # untrusted ref) is the same.
+   | |___________________________________^ does not set persist-credentials: false
+   |
+   = note: audit confidence → Low
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#artipacked
+
+error[dangerous-triggers]: use of fundamentally insecure workflow trigger
+  --> .github/workflows/pr-target-exfil.yml:29:1
+   |
+29 | / on:
+30 | |   pull_request_target:
+31 | |     branches: [main]
+   | |____________________^ pull_request_target is almost always used insecurely
+   |
+   = note: audit confidence → Medium
+   = help: audit documentation → https://docs.zizmor.sh/audits/#dangerous-triggers
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/pr-target-exfil.yml:45:15
+   |
+45 |         uses: actions/checkout@v4
+   |               ^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+error[unpinned-uses]: unpinned action reference
+  --> .github/workflows/pr-target-exfil.yml:69:15
+   |
+69 |         uses: actions/upload-artifact@v4
+   |               ^^^^^^^^^^^^^^^^^^^^^^^^^^ action is not pinned to a hash (required by blanket policy)
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#unpinned-uses
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/pr-target-exfil.yml:37:3
+   |
+37 |   vulnerable-checkout-and-exfil:
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/pr-target-exfil.yml:29:1
+   |
+29 | / on:
+30 | |   pull_request_target:
+31 | |     branches: [main]
+   | |____________________^ workflow is missing concurrency setting
+...
+37 |     vulnerable-checkout-and-exfil:
+   |     ----------------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+warning[secrets-outside-env]: secrets referenced without a dedicated environment
+  --> .github/workflows/pr-target-exfil.yml:57:41
+   |
+37 |   vulnerable-checkout-and-exfil:
+   |   ----------------------------- this job
+...
+57 |           DUMMY_API_KEY_DO_NOT_USE: ${{ secrets.DUMMY_API_KEY_DO_NOT_USE }}
+   |                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ secret is accessed outside of a dedicated environment
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#secrets-outside-env
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/script-injection.yml:45:39
+   |
+44 |         run: |
+   |         --- this run block
+45 |           echo "Processing issue: ${{ github.event.issue.title }}"
+   |                                       ^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+error[template-injection]: code injection via template expansion
+  --> .github/workflows/script-injection.yml:46:37
+   |
+44 |         run: |
+   |         --- this run block
+45 |           echo "Processing issue: ${{ github.event.issue.title }}"
+46 |           echo "Injection demo: ${{ github.event.issue.title }}" >> "$GITHUB_STEP_SUMMARY"
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^ may expand into attacker-controllable code
+   |
+   = note: audit confidence → High
+   = note: this finding has an auto-fix
+   = help: audit documentation → https://docs.zizmor.sh/audits/#template-injection
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/script-injection.yml:35:3
+   |
+35 |   vulnerable-inline-interpolation:
+   |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/script-injection.yml:27:1
+   |
+27 | / on:
+28 | |   issues:
+29 | |     types: [opened, edited]
+   | |___________________________^ workflow is missing concurrency setting
+...
+35 |     vulnerable-inline-interpolation:
+   |     ------------------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+warning[self-hosted-runner]: runs on a self-hosted runner
+  --> .github/workflows/self-hosted-runner-pattern.yml:64:5
+   |
+64 |     runs-on: self-hosted
+   |     ^^^^^^^^^^^^^^^^^^^^ self-hosted runner used here
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#self-hosted-runner
+
+info[anonymous-definition]: workflow or action definition without a name
+  --> .github/workflows/self-hosted-runner-pattern.yml:63:3
+   |
+63 |   build-on-self-hosted:
+   |   ^^^^^^^^^^^^^^^^^^^^ this job
+   |
+   = note: audit confidence → High
+   = tip: use 'name: ...' to give this job a name
+   = help: audit documentation → https://docs.zizmor.sh/audits/#anonymous-definition
+
+help[concurrency-limits]: insufficient job-level concurrency limits
+  --> .github/workflows/self-hosted-runner-pattern.yml:45:1
+   |
+45 | / on:
+46 | |   # workflow_dispatch is the least-automatically-triggerable event GitHub
+47 | |   # offers; even so, this workflow's dispatch has never been invoked. The
+48 | |   # commented pull_request_target trigger below shows the actual dangerous
+...  |
+52 | |   # pull_request_target:
+53 | |   #   branches: [main]
+   | |______________________^ workflow is missing concurrency setting
+...
+63 |     build-on-self-hosted:
+   |     -------------------- job affected by missing workflow concurrency
+   |
+   = note: audit confidence → High
+   = help: audit documentation → https://docs.zizmor.sh/audits/#concurrency-limits
+
+30 findings (6 unsafe fixes): 6 informational, 7 low, 5 medium, 12 high

@@ -1,0 +1,72 @@
+# GROUND TRUTH: class 1 — pull_request_target secret exfiltration
+#
+# What this demonstrates:
+#   `pull_request_target` runs in the context of the BASE repository, which
+#   means it has access to repo secrets even when triggered by a pull request
+#   from an untrusted branch. GitHub's own security docs say workflows using
+#   `pull_request_target` "may have repository write access and access to
+#   referenced secrets" and "must not explicitly check out untrusted code."
+#   (https://docs.github.com/en/actions/reference/security/secure-use)
+#
+#   This workflow does exactly what that warning says not to do: it checks
+#   out the PR's own head ref (`github.event.pull_request.head.sha`), which
+#   can be a same-repo feature branch controlled by anyone who can open a PR,
+#   and then runs a step from that untrusted checkout with a secret in scope.
+#
+# Safety boundaries (see README.md "Safety and scope" for the full policy):
+#   - The secret is DUMMY_API_KEY_DO_NOT_USE, an inert placeholder string,
+#     never a real credential.
+#   - The "exfil" sink is a GitHub Actions artifact (actions/upload-artifact),
+#     which stays entirely inside GitHub's own infrastructure. No outbound
+#     HTTP call, no third-party endpoint, no webhook. Nothing leaves GitHub.
+#   - Triggered only via a same-repo feature-branch PR, not a public fork.
+#
+# Planted vulnerability line: the checkout step below, "Check out PR head ref"
+# combined with the trigger `pull_request_target`.
+
+name: pr-target-exfil (VULNERABLE - class 1)
+
+on:
+  pull_request_target:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  vulnerable-checkout-and-exfil:
+    runs-on: ubuntu-latest
+    steps:
+      # VULNERABLE: pull_request_target grants secrets access, and this step
+      # checks out the PR head, i.e. attacker-influenced content, into that
+      # privileged context. This is the exact anti-pattern GitHub's secure-use
+      # docs warn about.
+      - name: Check out PR head ref
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      # In a real attack, a step from the untrusted checkout (e.g. a script
+      # committed on the attacker's branch) would run here with
+      # DUMMY_API_KEY_DO_NOT_USE in its environment. We simulate that "attacker
+      # script" step inline for lab clarity instead of shipping a second
+      # malicious file, but the effect (secret read by code influenced by the
+      # untrusted ref) is the same.
+      - name: Simulate untrusted step reading the secret
+        env:
+          DUMMY_API_KEY_DO_NOT_USE: ${{ secrets.DUMMY_API_KEY_DO_NOT_USE }}
+        run: |
+          mkdir -p exfil-proof
+          echo "Secret value observed by untrusted-context step: $DUMMY_API_KEY_DO_NOT_USE" > exfil-proof/proof.txt
+          echo "This step ran with the PR head ref checked out and a repo secret in scope." >> exfil-proof/proof.txt
+
+      # Sink: a GitHub Actions artifact. An artifact produced by a workflow
+      # run triggered from a fork PR is visible to anyone who can read the
+      # repo, which is itself a documented exfil path in GitHub's own docs.
+      # This never leaves GitHub's infrastructure, unlike a curl to an
+      # external endpoint.
+      - name: Upload proof artifact (in-GitHub sink, no external destination)
+        uses: actions/upload-artifact@v4
+        with:
+          name: exfil-proof
+          path: exfil-proof/proof.txt
