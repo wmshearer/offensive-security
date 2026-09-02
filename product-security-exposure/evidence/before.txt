@@ -1,0 +1,9 @@
+file size:        5,200,057 bytes
+declared elements: 5,000,000 FLOAT64
+bytes they need:   40,000,000
+bytes available:   5,200,008
+
+parse result:      parsed with no error
+time taken:        19.82s
+
+AFFECTED: a 5 MB upload occupies the parser for seconds.
