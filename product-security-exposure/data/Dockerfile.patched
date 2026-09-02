@@ -1,0 +1,6 @@
+# The same service with the PR #28131 fix applied to the installed gguf package.
+# This is what a product team would build to answer "does the fix actually work
+# in our image", rather than trusting the patch note.
+FROM inference-service:1.0
+COPY patch_gguf.py /tmp/patch_gguf.py
+RUN python /tmp/patch_gguf.py && rm /tmp/patch_gguf.py

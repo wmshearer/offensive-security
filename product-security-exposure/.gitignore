@@ -1,0 +1,6 @@
+# Pinned tool binaries; versions in VERSIONS.txt, downloaded by the walkthrough
+syft
+grype
+# Full SBOM and scan JSON are large; the summaries in evidence/ are what the writeup quotes
+evidence/sbom.json
+evidence/grype.json
