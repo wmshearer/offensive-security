@@ -1,0 +1,139 @@
+{
+  "scenario_summary": {
+    "benign": {
+      "capability": {
+        "file": "evidence/raw/benign__capability.txt",
+        "event_count": 12841
+      },
+      "namespace": {
+        "file": "evidence/raw/benign__namespace.txt",
+        "event_count": 0
+      },
+      "mount": {
+        "file": "evidence/raw/benign__mount.txt",
+        "event_count": 0
+      },
+      "ptrace": {
+        "file": "evidence/raw/benign__ptrace.txt",
+        "event_count": 0
+      },
+      "sensitive_write": {
+        "file": "evidence/raw/benign__sensitive_write.txt",
+        "event_count": 0
+      }
+    },
+    "privileged": {
+      "namespace": {
+        "file": "evidence/raw/privileged__namespace.txt",
+        "event_count": 13
+      },
+      "mount": {
+        "file": "evidence/raw/privileged__mount.txt",
+        "event_count": 23
+      },
+      "capability": {
+        "file": "evidence/raw/privileged__capability.txt",
+        "event_count": 26668
+      },
+      "sensitive_write": {
+        "file": "evidence/raw/privileged__sensitive_write.txt",
+        "event_count": 1
+      }
+    },
+    "docker_socket": {
+      "namespace": {
+        "file": "evidence/raw/docker_socket__namespace.txt",
+        "event_count": 13
+      },
+      "mount": {
+        "file": "evidence/raw/docker_socket__mount.txt",
+        "event_count": 142
+      },
+      "capability": {
+        "file": "evidence/raw/docker_socket__capability.txt",
+        "event_count": 11154
+      },
+      "ptrace": {
+        "file": "evidence/raw/docker_socket__ptrace.txt",
+        "event_count": 0
+      }
+    },
+    "gpu": {
+      "namespace": {
+        "file": "evidence/raw/gpu__namespace.txt",
+        "event_count": 19
+      },
+      "capability": {
+        "file": "evidence/raw/gpu__capability.txt",
+        "event_count": 5964
+      }
+    }
+  },
+  "false_positive_measurement": {
+    "benign_capability_total_events": 12841,
+    "benign_capability_from_cpptools_or_gdb": 1393,
+    "benign_capability_from_other_processes": 11448,
+    "benign_namespace_events": 0,
+    "benign_mount_events": 0,
+    "benign_ptrace_events": 0,
+    "benign_sensitive_write_events": 0
+  },
+  "detection_results_table": [
+    {
+      "technique": "Container namespace creation (docker run)",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": true,
+      "evidence": "evidence/raw/privileged__namespace.txt, gpu__namespace.txt",
+      "note": "unshare() with all 6 CLONE_NEW* flags, from runc:[1:CHILD], every time"
+    },
+    {
+      "technique": "--privileged container mounting a filesystem (CAP_SYS_ADMIN)",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": true,
+      "evidence": "evidence/raw/privileged__mount.txt",
+      "note": "mount() from a non-runtime comm inside the container is visible and distinguishable from runc's own setup mounts"
+    },
+    {
+      "technique": "Write to /proc/sys/kernel/core_pattern",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": true,
+      "evidence": "evidence/raw/privileged__sensitive_write.txt",
+      "note": "caught via legacy open(2), NOT openat(2) -- busybox sh uses open() for shell redirection"
+    },
+    {
+      "technique": "cgroup v1 release_agent escape",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": null,
+      "evidence": "not run: precondition does not exist on this host (cgroup v2 only, sibling project's finding)",
+      "note": "sensitive_write_watch.bt matches the filename and would fire on a v1 host, but this was not demonstrated live because the file does not exist here"
+    },
+    {
+      "technique": "--privileged grants 38 capabilities vs 14 default (static)",
+      "observable_at_syscall_level": false,
+      "detector_catches_it": false,
+      "evidence": "n/a -- capability GRANT produces no syscall",
+      "note": "a capability that is held but never exercised triggers no cap_capable() call; this is the project's central negative finding"
+    },
+    {
+      "technique": "Docker socket mounted + queried from inside container",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": false,
+      "evidence": "evidence/raw/docker_socket__*.txt",
+      "note": "connect()/read()/write() on the socket look identical to any other local IPC traffic; none of the 5 probes produced a distinguishing signal"
+    },
+    {
+      "technique": "--gpus all capability set == unprivileged default (sibling finding)",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": true,
+      "evidence": "evidence/raw/gpu__namespace.txt",
+      "note": "namespace creation pattern for the GPU container is byte-identical to a default container's, which agrees with the sibling project's static capability finding"
+    },
+    {
+      "technique": "ptrace attach across process boundary (host to container process)",
+      "observable_at_syscall_level": true,
+      "detector_catches_it": true,
+      "evidence": "evidence/raw/ptrace_cross_container.txt",
+      "note": "gdb -p <container's host PID> from the host: PTRACE_ATTACH correctly captured and distinguished from PTRACE_TRACEME"
+    }
+  ]
+}

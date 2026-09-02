@@ -1,0 +1,10 @@
+{
+  "scenario": "docker_socket",
+  "duration_sec": 12,
+  "probes": {
+    "namespace": "evidence/raw/docker_socket__namespace.txt",
+    "mount": "evidence/raw/docker_socket__mount.txt",
+    "capability": "evidence/raw/docker_socket__capability.txt",
+    "ptrace": "evidence/raw/docker_socket__ptrace.txt"
+  }
+}

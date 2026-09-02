@@ -1,0 +1,27 @@
+Attached 3 probes
+TIME     PID      COMM                 SYSCALL    DETAIL
+1307     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86-init/merged fstype=overlay
+1318     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86/merged fstype=overlay
+1326     2104881  dockerd              mount      src=overlay dst=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86/merged fstype=overlay
+1396     3292006  runc:[2:INIT]        mount      src= dst=/ fstype=
+1396     3292006  runc:[2:INIT]        mount      src= dst=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86/merged fstype=
+1396     3292006  runc:[2:INIT]        mount      src=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86/merged dst=/var/lib/docker/overlay2/3efaaf43778d39035a8e361348125452beba62112782945e1c64c21b3405cc86/merged fstype=bind
+1396     3292006  runc:[2:INIT]        mount      src=proc dst=/proc/thread-self/fd/14 fstype=proc
+1396     3292006  runc:[2:INIT]        mount      src=tmpfs dst=/proc/thread-self/fd/14 fstype=tmpfs
+1396     3292006  runc:[2:INIT]        mount      src=devpts dst=/proc/thread-self/fd/11 fstype=devpts
+1397     3292006  runc:[2:INIT]        mount      src=sysfs dst=/proc/thread-self/fd/14 fstype=sysfs
+1397     3292006  runc:[2:INIT]        mount      src=cgroup dst=/proc/thread-self/fd/14 fstype=cgroup2
+1397     3292006  runc:[2:INIT]        mount      src=mqueue dst=/proc/thread-self/fd/11 fstype=mqueue
+1397     3292006  runc:[2:INIT]        mount      src=shm dst=/proc/thread-self/fd/11 fstype=tmpfs
+1397     3292006  runc:[2:INIT]        mount      src=/var/lib/docker/containers/0b1c7732a613f000c45693075c66be27c975b8d875138737dc98ec46ba84c341/resolv.conf dst=/proc/thread-self/fd/14 fstype=bind
+1397     3292006  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1397     3292006  runc:[2:INIT]        mount      src=/var/lib/docker/containers/0b1c7732a613f000c45693075c66be27c975b8d875138737dc98ec46ba84c341/hostname dst=/proc/thread-self/fd/14 fstype=bind
+1397     3292006  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1398     3292006  runc:[2:INIT]        mount      src=/var/lib/docker/containers/0b1c7732a613f000c45693075c66be27c975b8d875138737dc98ec46ba84c341/hosts dst=/proc/thread-self/fd/14 fstype=bind
+1398     3292006  runc:[2:INIT]        mount      src= dst=/proc/thread-self/fd/15 fstype=
+1409     3292006  runc:[2:INIT]        pivot_root new_root=. put_old=.
+1410     3292006  runc:[2:INIT]        mount      src= dst=. fstype=
+1413     2104881  dockerd              mount      src=/proc/3292006/ns/net dst=/var/run/docker/netns/e673962d8267 fstype=bind
+1442     3292066  mount                mount      src=tmpfs dst=/mnt/test fstype=tmpfs  <-- NOT container runtime, worth review
+
+

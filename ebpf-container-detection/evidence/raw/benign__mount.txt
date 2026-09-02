@@ -1,0 +1,4 @@
+Attached 3 probes
+TIME     PID      COMM                 SYSCALL    DETAIL
+
+

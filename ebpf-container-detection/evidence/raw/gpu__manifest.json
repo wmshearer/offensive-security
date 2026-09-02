@@ -1,0 +1,8 @@
+{
+  "scenario": "gpu",
+  "duration_sec": 10,
+  "probes": {
+    "namespace": "evidence/raw/gpu__namespace.txt",
+    "capability": "evidence/raw/gpu__capability.txt"
+  }
+}
