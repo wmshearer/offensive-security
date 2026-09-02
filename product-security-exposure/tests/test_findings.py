@@ -15,21 +15,22 @@ def read(n):
 
 
 def test_sbom_found_the_component():
-    sbom = json.loads(read("sbom.json"))
-    names = {a["name"]: a["version"] for a in sbom["artifacts"]}
-    assert names.get("gguf") == "0.19.0"
-    assert len(sbom["artifacts"]) == 142
+    # Reads the committed summary rather than the multi-megabyte raw SBOM, so the
+    # suite works from a fresh clone. Regenerate both with scripts/scan.sh.
+    sbom = json.loads(read("sbom-summary.json"))
+    assert sbom["packages"] == 142
+    assert sbom["gguf"]["version"] == "0.19.0"
 
 
 def test_scanner_found_many_vulns_but_none_in_gguf():
     # The headline. 160 findings, 7 critical, and zero for the one component
     # with a demonstrated exploit.
-    g = json.loads(read("grype.json"))
-    assert len(g["matches"]) == 160
-    crit = [m for m in g["matches"] if m["vulnerability"]["severity"] == "Critical"]
-    assert len(crit) == 7
-    gguf = [m for m in g["matches"] if m["artifact"]["name"] == "gguf"]
-    assert gguf == [], f"expected no gguf findings, got {gguf}"
+    g = json.loads(read("grype-summary.json"))
+    assert g["total"] == 160
+    sev = {b["severity"]: b["count"] for b in g["by_severity"]}
+    assert sev["Critical"] == 7
+    assert sev["High"] == 28
+    assert g["gguf_findings"] == [], g["gguf_findings"]
 
 
 def test_shipped_image_is_affected():
